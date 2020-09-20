@@ -29,6 +29,22 @@ impl FaceEncoding {
         Self { inner }
     }
 
+    /// Create a new encoding initialised with a f64 vector.
+    pub fn new_from_vec(vector: Vec<f64>) -> Self {
+        let inner = unsafe {
+            cpp!([vector as "dlib::matrix<double,0,1>"] -> FaceEncodingInner as "dlib::matrix<double,0,1>" {
+                auto inner = dlib::matrix<double,0,1>(128);
+                for (int i = 0; i < 128; i++) {
+                    inner(i) = vector;
+                }
+
+                return inner;
+            })
+        };
+
+        Self { inner }
+    }
+
     /// Calculate the euclidean distance between two encodings.
     ///
     /// This value can be compared to a constant to determine if the faces are the same or not.
