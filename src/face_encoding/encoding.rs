@@ -31,11 +31,12 @@ impl FaceEncoding {
 
     /// Create a new encoding initialised with a f64 vector.
     pub fn new_from_vec(vector: Vec<f64>) -> Self {
+        let len = vector.len();
         let inner = unsafe {
-            cpp!([vector as "dlib::matrix<double,0,1>"] -> FaceEncodingInner as "dlib::matrix<double,0,1>" {
-                auto inner = dlib::matrix<double,0,1>(128);
-                for (int i = 0; i < 128; i++) {
-                    inner(i) = vector;
+            cpp!([vector as "dlib::matrix<double,0,1>", len as "size_t"] -> FaceEncodingInner as "dlib::matrix<double,0,1>" {
+                auto inner = dlib::matrix<double,0,1>(len);
+                for (size_t i = 0; i < len; i++) {
+                    inner(i) = vector(i);
                 }
 
                 return inner;
